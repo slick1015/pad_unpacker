@@ -2,6 +2,7 @@ import io
 import struct
 from elftools.elf.elffile import ELFFile
 from emulator import Emulator
+from logging import *
 
 def unpack(binary):
     # the unpacking entry point is the first entry in the .init_array section
