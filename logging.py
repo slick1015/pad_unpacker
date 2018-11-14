@@ -1,4 +1,4 @@
-motd = "PaD Unpacker for Version 15.3.0 - MrSlick"
+MOTD = "PaD Unpacker for Version 15.3.0 - MrSlick"
 _indent_level = 0
 
 def log(*args, end=None):
@@ -17,6 +17,6 @@ def ldec():
     _indent_level -= 1
 
 def print_motd():
-    log("-" * len(motd))
-    log(motd)
-    log("-" * len(motd))
+    log("-" * len(MOTD))
+    log(MOTD)
+    log("-" * len(MOTD))

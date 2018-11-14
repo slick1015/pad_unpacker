@@ -1,4 +1,7 @@
 from unicorn import *
+from unicorn.arm_const import *
+from logging import log
+import syscalls
 
 # Hooking definitions
 
@@ -22,7 +25,6 @@ class Hook():
 
 def register(emu):
     for hook in _hooks:
-        print(hex(hook.type))
         if hook.is_uc_hook():
             emu.uc.hook_add(hook.type, hook.callback)
         elif hook.type == HOOK_OFFSET:
@@ -31,12 +33,23 @@ def register(emu):
 # Actual hooks
 
 def hook_code(uc, address, size, user_data):
-    print(hex(address))
+    # log("> Instruction at {:#010x}".format(address))
+
     for hook in _hooks:
         if address == hook.address:
             hook.callback(uc)
 Hook(UC_HOOK_CODE, hook_code)
 
-def hook_intr(mu, intno, user_data):
-    print("syscall " + hex(intno))
+def hook_intr(uc, intno, user_data):
+    log("# Interrupt number {:#x}".format(intno))
+
+    if intno == syscalls.SYSCALL_INT_NUMBER:
+        # register r7 contains the syscall_number
+        syscall_number = uc.reg_read(UC_ARM_REG_R7)
+        # registers r0-r6, including r6 contain the arguments
+        args = [uc.reg_read(reg_idx) for reg_idx in range(UC_ARM_REG_R0, UC_ARM_REG_R6 + 1)]
+
+        result = syscalls.handle(uc, syscall_number, args)
+        # register r0 will contain the result of the syscall
+        uc.reg_write(UC_ARM_REG_R0, result)
 Hook(UC_HOOK_INTR, hook_intr)

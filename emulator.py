@@ -3,16 +3,18 @@ from unicorn.arm_const import *
 import logging
 import hooks
 
+DEFAULT_BASE = 0x400000
+
 STACK_SIZE = 64 * 1024 * 1024  # I don't think we'll ever need more than 64 MB for the stack
 BIN_SIZE   = 128 * 1024 * 1024 # allocate 128 MB for the binary, probably overkill
 
 class Emulator():
-    def __init__(self, binary, base=0x400000):
+    def __init__(self, binary, base=DEFAULT_BASE):
         self.base = base
         self.uc = Uc(UC_ARCH_ARM, UC_MODE_ARM)
         self.next_alloc_base = self.base
 
-        bin_base = self.alloc(BIN_SIZE) # allocate 128 MB for the binary, probably overkill
+        bin_base = self.alloc(BIN_SIZE)
         self.uc.mem_write(bin_base, binary)
 
         stack_base = self.alloc(STACK_SIZE)
