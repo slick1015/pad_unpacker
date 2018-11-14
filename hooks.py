@@ -24,6 +24,8 @@ class Hook():
         return True
 
 def register(emu):
+    global _emu
+    _emu = emu
     for hook in _hooks:
         if hook.is_uc_hook():
             emu.uc.hook_add(hook.type, hook.callback)
@@ -49,7 +51,7 @@ def hook_intr(uc, intno, user_data):
         # registers r0-r6, including r6 contain the arguments
         args = [uc.reg_read(reg_idx) for reg_idx in range(UC_ARM_REG_R0, UC_ARM_REG_R6 + 1)]
 
-        result = syscalls.handle(uc, syscall_number, args)
+        result = syscalls.handle(_emu, syscall_number, args)
         # register r0 will contain the result of the syscall
         uc.reg_write(UC_ARM_REG_R0, result)
 Hook(UC_HOOK_INTR, hook_intr)
