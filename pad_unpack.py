@@ -14,10 +14,7 @@ def unpack(binary):
 
     emu = Emulator(binary)
     unpack_entry += emu.base # correct the entry point to where it is in memory
-    log("Emulation starting at {:#010x} with base {:#010x}".format(unpack_entry, emu.base))
-    linc()
     emu.start(unpack_entry, unpack_entry + (4 * 5)) # the unpack function ends 5 instructions after entry, each instruction is 4 bytes
-    ldec()
 
     unpacked_begin, unpacked_end, unpacked_perms = emu.allocations()[0] # the first allocation holds the original binary
 

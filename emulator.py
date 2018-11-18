@@ -1,6 +1,6 @@
 from unicorn import *
 from unicorn.arm_const import *
-import logging
+from logging import *
 import hooks
 
 DEFAULT_BASE = 0x400000
@@ -23,10 +23,18 @@ class Emulator():
         hooks.register(self)
 
     def start(self, start_address, end_address):
+        log("Emulation starting at {:#010x} with base {:#010x}".format(start_address, self.base))
+
+        linc()
         self.uc.reg_write(UC_ARM_REG_PC, start_address)
         self.uc.emu_start(start_address, end_address)
+        ldec()
+
+        log("Emulation ended naturally")
 
     def stop(self):
+        log("Emulation stopping unexpectedly, PC at {:#010x}".format(self.uc.reg_read(UC_ARM_REG_PC)))
+
         self.uc.emu_stop()
 
     def alloc(self, size):

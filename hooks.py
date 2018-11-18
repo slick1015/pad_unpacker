@@ -43,7 +43,7 @@ def hook_code(uc, address, size, user_data):
 Hook(UC_HOOK_CODE, hook_code)
 
 def hook_intr(uc, intno, user_data):
-    log("# Interrupt number {:#x}".format(intno))
+    # log("# Interrupt number {:#x}".format(intno))
 
     if intno == syscalls.SYSCALL_INT_NUMBER:
         # register r7 contains the syscall_number
@@ -53,5 +53,6 @@ def hook_intr(uc, intno, user_data):
 
         result = syscalls.handle(_emu, syscall_number, args)
         # register r0 will contain the result of the syscall
-        uc.reg_write(UC_ARM_REG_R0, result)
+        if result != None:
+            uc.reg_write(UC_ARM_REG_R0, result)
 Hook(UC_HOOK_INTR, hook_intr)
