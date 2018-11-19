@@ -28,7 +28,7 @@ if __name__ == "__main__":
     print_motd()
 
     parser = ArgumentParser()
-    parser.add_argument("binary", help="binary to be unpacked")
+    parser.add_argument("binary", help="binary to be unpacked, .apk or .so")
     parser.add_argument("-l", "--lib_path", help="path to the library in the apk to be unpacked", default="lib/armeabi/libpad.so")
     args = parser.parse_args()
 
