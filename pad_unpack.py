@@ -18,6 +18,7 @@ def unpack(binary):
 
     unpacked_begin, unpacked_end, unpacked_perms = emu.allocations()[0] # the first allocation holds the original binary
 
+    # TODO: there will probably need to be more processing on the final binary
     return emu.uc.mem_read(unpacked_begin, len(binary)) # we only want as many bytes as the size of the original binary
 
 if __name__ == "__main__":

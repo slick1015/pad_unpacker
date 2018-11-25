@@ -1,6 +1,7 @@
 from logging import *
 import os
 import sys
+import fs
 
 SYSCALL_INT_NUMBER = 0x2
 
@@ -31,10 +32,5 @@ def handle(emu, syscall_number, args):
         log("Unhandled syscall: {:#x}".format(syscall_number))
         emu.stop()
 
-# Actual syscalls
 
-# int open(const char *pathname, int flags, mode_t mode);
-def open_handler(emu, filename_addr, flags, mode):
-    log(emu.read_string(filename_addr))
-    return -1
-SyscallHandler("open", 0x5, 3, open_handler)
+SyscallHandler("open", 0x5, 3, fs.open_handler)

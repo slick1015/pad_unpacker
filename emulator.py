@@ -28,9 +28,9 @@ class Emulator():
         linc()
         self.uc.reg_write(UC_ARM_REG_PC, start_address)
         self.uc.emu_start(start_address, end_address)
+        log("Emulation ended")
         ldec()
 
-        log("Emulation ended naturally")
 
     def stop(self):
         log("Emulation stopping unexpectedly, PC at {:#010x}".format(self.uc.reg_read(UC_ARM_REG_PC)))
