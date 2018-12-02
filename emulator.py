@@ -2,11 +2,15 @@ from unicorn import *
 from unicorn.arm_const import *
 from logging import *
 import hooks
+import time
+import os
 
 DEFAULT_BASE = 0x400000
 
 STACK_SIZE = 64 * 1024 * 1024  # I don't think we'll ever need more than 64 MB for the stack
 BIN_SIZE   = 128 * 1024 * 1024 # allocate 128 MB for the binary, probably overkill
+
+DUMP_DIR = "dump"
 
 class Emulator():
     def __init__(self, base=DEFAULT_BASE):
@@ -28,6 +32,7 @@ class Emulator():
         self.uc.reg_write(UC_ARM_REG_PC, start_address)
         self.uc.emu_start(start_address, end_address)
         log("Emulation ended")
+        self.debug_dump()
         ldec()
 
 
@@ -54,3 +59,14 @@ class Emulator():
             buf.append(c)
             address += 1
         return "".join(map(chr, buf))
+
+    def debug_dump(self):
+        local_dir = os.path.dirname(__file__)
+        out_dir = os.path.join(local_dir, DUMP_DIR, str(int(time.time())))
+        os.makedirs(out_dir)
+        
+        for begin, end, prot in self.allocations():
+            filename = "{:#010x}-{:#010x}.bin".format(begin, end)
+            pathname = os.path.join(out_dir, filename)
+            with open(pathname, "wb") as f:
+                f.write(self.uc.mem_read(begin, end - begin))
