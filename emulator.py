@@ -9,16 +9,15 @@ STACK_SIZE = 64 * 1024 * 1024  # I don't think we'll ever need more than 64 MB f
 BIN_SIZE   = 128 * 1024 * 1024 # allocate 128 MB for the binary, probably overkill
 
 class Emulator():
-    def __init__(self, binary, base=DEFAULT_BASE):
+    def __init__(self, base=DEFAULT_BASE):
         self.base = base
         self.uc = Uc(UC_ARCH_ARM, UC_MODE_ARM)
         self.next_alloc_base = self.base
 
-        bin_base = self.alloc(BIN_SIZE)
-        self.uc.mem_write(bin_base, binary)
+        self.bin_base = self.alloc(BIN_SIZE)
 
-        stack_base = self.alloc(STACK_SIZE)
-        self.uc.reg_write(UC_ARM_REG_SP, stack_base  + (STACK_SIZE // 2)) # point SP to the middle of the stack, just to be safe
+        self.stack_base = self.alloc(STACK_SIZE)
+        self.uc.reg_write(UC_ARM_REG_SP, self.stack_base  + (STACK_SIZE // 2)) # point SP to the middle of the stack, just to be safe
 
         hooks.register(self)
 
