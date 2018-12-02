@@ -1,7 +1,7 @@
 from logging import *
 import os
 import sys
-import fs
+import vfs
 
 SYSCALL_INT_NUMBER = 0x2
 
@@ -33,4 +33,4 @@ def handle(emu, syscall_number, args):
         emu.stop()
 
 
-SyscallHandler("open", 0x5, 3, fs.open_handler)
+SyscallHandler("open", 0x5, 3, vfs.open_handler)

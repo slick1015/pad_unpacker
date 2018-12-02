@@ -3,8 +3,13 @@ import struct
 from elftools.elf.elffile import ELFFile
 from emulator import Emulator
 from logging import *
+from vfs import write_vfs_libpad
 
 def unpack(binary):
+    # the virtual filesystem needs a copy of the binary 
+    # so the binary can parse itself during unpacking
+    write_vfs_libpad(binary)
+
     # the unpacking entry point is the first entry in the .init_array section
     # to find it we can just parse the ELF, find the .init_array section, and read the first pointer
     elf = ELFFile(io.BytesIO(binary))
